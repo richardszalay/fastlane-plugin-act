@@ -1,0 +1,42 @@
+fastlane_version "1.99.0"
+
+lane :test do
+  create_sample_ipa
+
+  # Modify Info.plist
+  facelift(
+    ipa: "example/Example.ipa",
+    iconset: "example/Blue.appiconset",
+
+    # Set a hash of plist values
+    plist_values: {
+      ":CustomApplicationKey" => "Replaced!"
+    },
+
+    # Run a list of PlistBuddy commands
+    plist_commands: [
+      "Delete :DebugApplicationKey"
+    ]
+  )
+
+  # Modify a different plist
+  facelift(
+    ipa: "example/Example.ipa",
+
+    plist_file: "GoogleService-Info.plist",
+    plist_values: {
+      ":TRACKING_ID" => "UA-22222222-22"
+    }
+  )
+
+  UI.message("IPA at example/Example.ipa has been reconfigured in-place, but will require 'resign' before it can be deployed")
+end
+
+# Pay no attention to the man behind the curtain
+private_lane :create_sample_ipa do
+  File.delete("../example/Example.ipa") if File.exist?("../example/Example.ipa")
+
+  Dir.chdir("../example/layout/") do
+    sh("zip ../Example.ipa -r * ")
+  end
+end
