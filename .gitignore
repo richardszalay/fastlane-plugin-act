@@ -10,3 +10,4 @@ fastlane/README.md
 fastlane/report.xml
 *.ipa
 .DS_Store
+pkg/

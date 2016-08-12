@@ -1,4 +1,4 @@
-describe Fastlane::Actions::FaceliftAction do
+describe Fastlane::Actions::ActAction do
   describe '#run' do
     before(:context) do
       @tmp_dir = Dir.mktmpdir
@@ -15,7 +15,7 @@ describe Fastlane::Actions::FaceliftAction do
 
     context 'providing plist values' do
       it 'defaults to info.plist' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
           plist_values: {
             ":CustomApplicationKey" => "Replaced"
@@ -28,7 +28,7 @@ describe Fastlane::Actions::FaceliftAction do
       end
 
       it 'can use a different plist' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
 
           plist_file: "GoogleService-Info.plist",
@@ -46,7 +46,7 @@ describe Fastlane::Actions::FaceliftAction do
 
     context 'providing plist commands' do
       it 'defaults to info.plist' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
           plist_commands: [
             "Add :NewKey string NewValue"
@@ -59,7 +59,7 @@ describe Fastlane::Actions::FaceliftAction do
       end
 
       it 'can use a different plist' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
 
           plist_file: "GoogleService-Info.plist",
@@ -77,7 +77,7 @@ describe Fastlane::Actions::FaceliftAction do
 
     context 'providing an iconset' do
       it 'deletes old icon files' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
           iconset: "example/Blue.appiconset"
         )
@@ -88,7 +88,7 @@ describe Fastlane::Actions::FaceliftAction do
       end
 
       it 'adds new icon files' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
           iconset: "example/Blue.appiconset"
         )
@@ -99,7 +99,7 @@ describe Fastlane::Actions::FaceliftAction do
       end
 
       it 'modifies the Info.plist' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
           iconset: "example/Blue.appiconset"
         )
@@ -115,7 +115,7 @@ describe Fastlane::Actions::FaceliftAction do
       # TODO: More tests for other idioms (ie. iPad icons). These are supported, but there's no tests yet
 
       it 'ignores :plist_file option' do
-        Fastlane::Actions::FaceliftAction.run(
+        Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
           plist_file: "GoogleService-Info.plist",
           iconset: "example/Blue.appiconset"

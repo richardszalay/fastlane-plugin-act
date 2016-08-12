@@ -1,5 +1,5 @@
 module Fastlane
-  module Helper
+  module ActHelper
     class PlistBuddy
       def initialize(plist_file)
         @plist_file = plist_file

@@ -1,5 +1,5 @@
 module Fastlane
-  module Helper
+  module ActHelper
     class PlistPatcher
       def self.patch(archive, plist_path, values, commands)
         archive.extract(plist_path)

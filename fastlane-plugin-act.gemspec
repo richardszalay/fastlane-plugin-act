@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'fastlane/plugin/facelift/version'
+require 'fastlane/plugin/act/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'fastlane-plugin-facelift'
-  spec.version       = Fastlane::Facelift::VERSION
+  spec.name          = 'fastlane-plugin-act'
+  spec.version       = Fastlane::Act::VERSION
   spec.author        = %q{Richard Szalay}
   spec.email         = %q{richard@richardszalay.com}
 
   spec.summary       = %q{Applies changes to plists and app icons inside a compiled IPA}
-  spec.homepage      = "https://github.com/richardszalay/fastlane-plugin-facelift"
+  spec.homepage      = "https://github.com/richardszalay/fastlane-plugin-act"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)

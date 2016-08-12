@@ -4,7 +4,7 @@ lane :test do
   create_sample_ipa
 
   # Modify Info.plist
-  facelift(
+  act(
     ipa: "example/Example.ipa",
     iconset: "example/Blue.appiconset",
 
@@ -20,7 +20,7 @@ lane :test do
   )
 
   # Modify a different plist
-  facelift(
+  act(
     ipa: "example/Example.ipa",
 
     plist_file: "GoogleService-Info.plist",

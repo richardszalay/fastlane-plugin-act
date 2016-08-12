@@ -1,5 +1,5 @@
 module Fastlane
-  module Helper
+  module ActHelper
     class IPAArchive
       def initialize(ipa_file, app_name, temp_dir)
         @ipa_file = ipa_file

@@ -1,6 +1,6 @@
 module Fastlane
   module Actions
-    class FaceliftAction < Action
+    class ActAction < Action
       def self.run(params)
         params[:ipa] = File.expand_path params[:ipa]
         raise "IPA #{params[:ipa]} does not exist" unless File.exist? params[:ipa]
@@ -11,20 +11,20 @@ module Fastlane
         params[:temp_dir] = Dir.mktmpdir if create_temp_dir
         UI.verbose("Working in temp dir: #{params[:temp_dir]}")
 
-        archive = Helper::IPAArchive.new params[:ipa], params[:app_name], params[:temp_dir]
+        archive = ActHelper::IPAArchive.new params[:ipa], params[:app_name], params[:temp_dir]
 
         raise "IPA does not contain Payload/#{params[:app_name]}. Rename the .ipa to match the .app, or provide an app_name option value" unless archive.contains
 
         params[:plist_file] = "Info.plist" unless params[:plist_file]
 
-        Helper::PlistPatcher.patch(
+        ActHelper::PlistPatcher.patch(
           archive,
           params[:plist_file],
           params[:plist_values],
           params[:plist_commands]
         ) if params[:plist_values] or params[:plist_commands]
 
-        Helper::IconPatcher.patch(
+        ActHelper::IconPatcher.patch(
           archive,
           params[:iconset],
           !params[:skip_delete_icons]

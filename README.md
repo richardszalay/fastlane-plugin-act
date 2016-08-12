@@ -1,16 +1,16 @@
-# facelift plugin
+# act plugin
 
-[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-facelift)
+[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-act)
 
 ## Getting Started
 
-This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To get started with `fastlane-plugin-facelift`, add it to your project by running:
+This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To get started with `fastlane-plugin-act`, add it to your project by running:
 
 ```bash
-fastlane add_plugin facelift
+fastlane add_plugin act
 ```
 
-## About facelift
+## About act
 
 Applies changes to plists and app icons inside a compiled IPA, combined with sigh's `resign` it makes it easy to release an IPA with different configurations 🎭
 
@@ -22,7 +22,7 @@ Here's some usage scenarios:
 
 ```ruby
 # Modify Info.plist
-facelift(
+act(
   ipa: "example/Example.ipa",
 
   iconset: "example/Blue.appiconset",
@@ -39,7 +39,7 @@ facelift(
 )
 
 # Modify a different plist
-facelift(
+act(
   ipa: "example/Example.ipa",
   plist_file: "GoogleService-Info.plist",
   
