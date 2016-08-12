@@ -140,7 +140,7 @@ describe Fastlane::Actions::ActAction do
     def archive_contains(path)
       Dir.mktmpdir do |dir|
         Dir.chdir dir do
-          `zipinfo -1 #{@ipa_file} #{path}`
+          `zipinfo -1 #{@ipa_file} #{path} 2>&1`
 
           return $?.exitstatus.zero?
         end
