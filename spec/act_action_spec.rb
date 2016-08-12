@@ -1,6 +1,6 @@
 describe Fastlane::Actions::ActAction do
   describe '#run' do
-    before(:context) do
+    before do
       @tmp_dir = Dir.mktmpdir
       @ipa_file = File.join(@tmp_dir, "Example.ipa")
 
@@ -9,7 +9,7 @@ describe Fastlane::Actions::ActAction do
       end
     end
 
-    after(:context) do
+    after do
       FileUtils.rm_rf(@tmp_dir)
     end
 
@@ -41,6 +41,25 @@ describe Fastlane::Actions::ActAction do
         result = invoke_plistbuddy("Print :TRACKING_ID", "Payload/Example.app/GoogleService-Info.plist")
 
         expect(result).to eql("UA-22222222-22")
+      end
+
+      it 'can override app name' do
+        renamed_ipa_file = File.join(@tmp_dir, "NotExample.ipa")
+        FileUtils.mv(@ipa_file, renamed_ipa_file)
+
+        @ipa_file = renamed_ipa_file
+
+        Fastlane::Actions::ActAction.run(
+          ipa: renamed_ipa_file,
+          app_name: 'Example.app',
+          plist_values: {
+            ":CustomApplicationKey" => "Replaced"
+          }
+        )
+
+        result = invoke_plistbuddy("Print :CustomApplicationKey", "Payload/Example.app/Info.plist")
+
+        expect(result).to eql("Replaced")
       end
     end
 
@@ -85,6 +104,18 @@ describe Fastlane::Actions::ActAction do
         result = archive_contains("Payload/Example.app/Orange29x29@2x.png")
 
         expect(result).to be false
+      end
+
+      it 'can optionally not delete old icon files' do
+        Fastlane::Actions::ActAction.run(
+          ipa: @ipa_file,
+          iconset: "example/Blue.appiconset",
+          skip_delete_icons: true
+        )
+
+        result = archive_contains("Payload/Example.app/Orange29x29@2x.png")
+
+        expect(result).to be true
       end
 
       it 'adds new icon files' do
