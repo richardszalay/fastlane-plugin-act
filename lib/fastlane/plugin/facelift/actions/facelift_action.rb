@@ -2,6 +2,9 @@ module Fastlane
   module Actions
     class FaceliftAction < Action
       def self.run(params)
+
+        UI.important "fastlane-plugin-facelift has been deprecated and has been replaced by fastlane-plugin-act"
+
         params[:ipa] = File.expand_path params[:ipa]
         raise "IPA #{params[:ipa]} does not exist" unless File.exist? params[:ipa]
 
