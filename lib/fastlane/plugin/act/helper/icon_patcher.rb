@@ -41,7 +41,9 @@ module Fastlane
 
         icon_set_manifest = JSON.parse(File.read(icon_set_manifest_file))
 
-        return icon_set_manifest["images"].map do |entry|
+        valid_icon_images = icon_set_manifest["images"].select { |image| image['filename'] }
+
+        return valid_icon_images.map do |entry|
           scale_suffix = entry['scale'] == '1x' ? '' : "@" + entry['scale']
           idiom_suffix = entry['idiom'] == "iphone" ? '' : "~" + entry['idiom']
           file_extension = File.extname(entry['filename'])

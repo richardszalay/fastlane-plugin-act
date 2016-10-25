@@ -129,6 +129,17 @@ describe Fastlane::Actions::ActAction do
         expect(result).to be true
       end
 
+      it 'excludes images without filenames' do
+        Fastlane::Actions::ActAction.run(
+          ipa: @ipa_file,
+          iconset: "example/Blue.appiconset"
+        )
+
+        result = archive_contains("Payload/Example.app/Blue60x60@3x.png")
+
+        expect(result).to be false
+      end
+
       it 'modifies the Info.plist' do
         Fastlane::Actions::ActAction.run(
           ipa: @ipa_file,
