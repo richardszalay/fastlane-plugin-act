@@ -2,20 +2,28 @@ module Fastlane
   module Actions
     class ActAction < Action
       def self.run(params)
-        params[:ipa] = File.expand_path params[:ipa]
-        raise "IPA #{params[:ipa]} does not exist" unless File.exist? params[:ipa]
+        raise "You must supply an :archive_path" unless params[:archive_path] || params[:ipa]
 
-        params[:app_name] = (File.basename params[:ipa], ".*") + ".app" unless params[:app_name]
+        if params[:ipa] then
+          warn "The ipa parameter has been superceded by archive_path and may be removed in a future release"
+          params[:archive_path] = params[:ipa]
+        end
+        
+        params[:archive_path] = File.expand_path params[:archive_path]
+        raise "Archive path #{params[:arhive_path]} does not exist" unless File.exist? params[:archive_path]
 
-        create_temp_dir = params[:temp_dir].nil?
-        params[:temp_dir] = Dir.mktmpdir if create_temp_dir
-        UI.verbose("Working in temp dir: #{params[:temp_dir]}")
+        if File.directory? params[:archive_path] then
+          archive = ActHelper::XCArchive.new params[:archive_path], params[:app_name]
+        else
+          archive = ActHelper::IPAArchive.new params[:archive_path], params[:app_name], params[:temp_dir]
+        end
 
-        archive = ActHelper::IPAArchive.new params[:ipa], params[:app_name], params[:temp_dir]
-
-        raise "IPA does not contain Payload/#{params[:app_name]}. Rename the .ipa to match the .app, or provide an app_name option value" unless archive.contains
-
-        params[:plist_file] = "Info.plist" unless params[:plist_file]
+        if params[:plist_file] then
+          params[:plist_file] = archive.app_path(params[:plist_file]) unless params[:plist_file].start_with?("/")
+          params[:plist_file][0] = '' if params[:plist_file].start_with?("/")
+        else
+          params[:plist_file] = archive.app_path("Info.plist")
+        end
 
         ActHelper::PlistPatcher.patch(
           archive,
@@ -29,11 +37,6 @@ module Fastlane
           params[:iconset],
           !params[:skip_delete_icons]
         ) if params[:iconset]
-
-        if create_temp_dir
-          UI.verbose("Removing temp dir")
-          `rm -rf #{params[:temp_dir]}`
-        end
       end
 
       def self.description
@@ -48,8 +51,22 @@ module Fastlane
         [
           FastlaneCore::ConfigItem.new(key: :ipa,
                                   env_name: "FACELIFT_IPA",
-                               description: "Path of the IPA file being modified",
-                                  optional: false,
+                               description: "Path of the IPA file being modified. Deprecated, use  archive_path",
+                                  optional: true,
+                       conflicting_options: [:archive_path],
+                            conflict_block: proc do |value|
+                              UI.user_error!("You can't use 'ipa' and 'archive_path' options in one run")
+                            end,
+                                      type: String),
+
+          FastlaneCore::ConfigItem.new(key: :archive_path,
+                                  env_name: "FACELIFT_ARCHIVE_PATH",
+                               description: "Path of the IPA or XCARCHIVE being modified",
+                                  optional: true,
+                       conflicting_options: [:ipa],
+                            conflict_block: proc do |value|
+                              UI.user_error!("You can't use 'ipa' and 'archive_path' options in one run")
+                             end,
                                       type: String),
 
           FastlaneCore::ConfigItem.new(key: :iconset,
@@ -79,7 +96,7 @@ module Fastlane
           # Very optional
           FastlaneCore::ConfigItem.new(key: :app_name,
                                   env_name: "FACELIFT_APP_NAME",
-                               description: "The name of the .app file (including extension), if not the same as the IPA",
+                               description: "The name of the .app file (including extension), will be extracted if not supplied",
                                   optional: true,
                                       type: String),
 
@@ -91,7 +108,7 @@ module Fastlane
 
           FastlaneCore::ConfigItem.new(key: :skip_delete_icons,
                                     env_name: "FACELIFT_SKIP_DELETE_ICONS",
-                                 description: "When true, the old icon files will not be deleted from the IPA",
+                                 description: "When true, the old icon files will not be deleted from the archive",
                                     optional: true,
                                 default_value: false,
                                         type: [TrueClass, FalseClass])

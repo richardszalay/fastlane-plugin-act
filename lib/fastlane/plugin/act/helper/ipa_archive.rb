@@ -1,23 +1,35 @@
 module Fastlane
   module ActHelper
     class IPAArchive
-      def initialize(ipa_file, app_name, temp_dir)
+      def initialize(ipa_file, app_name = null, temp_dir = null)
         @ipa_file = ipa_file
-        @app_path = "Payload/#{app_name}"
-        @temp_dir = temp_dir
+        
+        @create_temp_dir = temp_dir.nil?
+        @temp_dir = Dir.mktmpdir if @create_temp_dir
+        UI.verbose("Working in temp dir: #{@temp_dir}")
+
+        @app_path = "Payload/#{app_name}" if app_name
+        @app_path = IPAArchive.extract_app_path(@ipa_file) unless app_name
+
+        raise "IPA does not contain #{@app_path}" unless contains("#{@app_path}/")
       end
 
-      # Returns the full path to the given file within the temp dir
+      # Returns the full path to the given file that can be modified
       def local_path(path)
-        "#{@temp_dir}/#{@app_path}/#{path}"
+        "#{@temp_dir}/#{path}"
+      end
+
+      # Returns an archive-relative path to the given application file
+      def app_path(path)
+        "#{@app_path}/#{path}"
       end
 
       # Extract files to the temp dir
       def extract(path)
-        UI.verbose("Extracting #{@app_path}/#{path}")
+        UI.verbose("Extracting #{path}")
 
         Dir.chdir(@temp_dir) do
-          result = `unzip -o -q #{@ipa_file} #{@app_path}/#{path}`
+          result = `unzip -o -q #{@ipa_file} #{path}`
 
           if $?.exitstatus.nonzero?
             UI.important result
@@ -28,27 +40,32 @@ module Fastlane
 
       # Restore extracted files from the temp dir
       def replace(path)
-        UI.verbose("Replacing #{@app_path}/#{path}")
+        UI.verbose("Replacing #{path}")
         Dir.chdir(@temp_dir) do
-          `zip -q #{@ipa_file} #{@app_path}/#{path}`
+          `zip -q #{@ipa_file} #{path}`
         end
       end
 
       # Delete path inside the ipa
       def delete(path)
-        UI.verbose("Deleting #{@app_path}/#{path}")
+        UI.verbose("Deleting #{path}")
         Dir.chdir(@temp_dir) do
-          `zip -dq #{@ipa_file} #{@app_path}/#{path}`
+          `zip -dq #{@ipa_file} #{path}`
         end
       end
 
       def contains(path = nil)
-        `zipinfo -1 #{@ipa_file} #{@app_path}/#{path}`
+        `zipinfo -1 #{@ipa_file} #{path}`
         $?.exitstatus.zero?
       end
 
       def clean
-        `rm -rf #{temp_dir}/*`
+        `rm -rf #{temp_dir}` if @create_temp_dir
+        `rm -rf #{temp_dir}/*` unless @create_temp_dir
+      end
+
+      def self.extract_app_path(archive_path)
+        `zipinfo -1 #{archive_path} "Payload/*.app/" | sed -n '1 p'`.strip().chomp('/')
       end
     end
   end

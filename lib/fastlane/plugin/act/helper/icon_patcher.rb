@@ -2,7 +2,7 @@ module Fastlane
   module ActHelper
     class IconPatcher
       def self.patch(archive, iconset_path, delete_old_iconset)
-        plist_path = "Info.plist"
+        plist_path = archive.app_path("Info.plist")
         archive.extract(plist_path)
 
         UI.message("Patching icons from: #{iconset_path}")
@@ -19,7 +19,7 @@ module Fastlane
           plist_buddy.exec("Add #{icons_plist_key} array")
 
           icons.each do |i|
-            relative_path = (i[:target]).to_s
+            relative_path = archive.app_path( (i[:target]).to_s )
             local_path = archive.local_path(relative_path)
             `cp #{i[:source]} #{local_path}`
             archive.replace(relative_path)
@@ -77,7 +77,7 @@ module Fastlane
           existing_icons = plist_buddy.parse_scalar_array(icon_files_value)
 
           if existing_icons.size && delete_old_iconset
-            icons_to_delete = existing_icons.map { |name| "#{name}#{idiom_suffix}*" }
+            icons_to_delete = existing_icons.map { |name| archive.app_path("#{name}#{idiom_suffix}*") }
 
             icons_to_delete.each do |icon_to_delete|
               archive.delete icon_to_delete

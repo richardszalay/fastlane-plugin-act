@@ -11,3 +11,5 @@ fastlane/report.xml
 *.ipa
 .DS_Store
 pkg/
+.bundle/
+.gems/

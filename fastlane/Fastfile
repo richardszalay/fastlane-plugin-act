@@ -5,7 +5,7 @@ lane :test do
 
   # Modify Info.plist
   act(
-    ipa: "example/Example.ipa",
+    archive_path: "example/Example.ipa",
     iconset: "example/Blue.appiconset",
 
     # Set a hash of plist values
@@ -21,7 +21,7 @@ lane :test do
 
   # Modify a different plist
   act(
-    ipa: "example/Example.ipa",
+    archive_path: "example/Example.ipa",
 
     plist_file: "GoogleService-Info.plist",
     plist_values: {

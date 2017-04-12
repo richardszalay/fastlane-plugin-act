@@ -12,7 +12,7 @@ fastlane add_plugin act
 
 ## About act
 
-Applies changes to plists and app icons inside a compiled IPA, combined with sigh's `resign` it makes it easy to release an IPA with different configurations 🎭
+Applies changes to plists and app icons inside an xcarchive bundle or compiled IPA, making it easy to build once and release multiple times with different configurations 🎭
 
 ## Example
 
@@ -21,9 +21,9 @@ Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plu
 Here's some usage scenarios:
 
 ```ruby
-# Modify Info.plist
+# Modify the application Info.plist
 act(
-  ipa: "example/Example.ipa",
+  archive_path: "example/Example.xcarchive",
 
   iconset: "example/Blue.appiconset",
 
@@ -38,14 +38,45 @@ act(
   ]
 )
 
-# Modify a different plist
+# Modify a different application plist
 act(
-  ipa: "example/Example.ipa",
+  archive_path: "example/Example.xcarchive",
+
+  # Using a relative path indicates a plist file inside the .app
   plist_file: "GoogleService-Info.plist",
   
   plist_values: {
     ":TRACKING_ID" => "UA-22222222-22"
   }
+)
+
+# Modify the xcarchive manifest plist
+act(
+  archive_path: "example/Example.xcarchive",
+  
+  # Prefixing with a / allows you to target any plist in the archive
+  plist_file: "/Info.plist",
+  
+  plist_values: {
+    ":TRACKING_ID" => "UA-22222222-22"
+  }
+)
+
+# Modify Info.plist in an IPA
+act(
+  archive_path: "example/Example.ipa",
+
+  iconset: "example/Blue.appiconset",
+
+  # Set a hash of plist values
+  plist_values: {
+    ":CustomApplicationKey" => "Replaced!"
+  },
+
+  # Run a list of PlistBuddy commands
+  plist_commands: [
+    "Delete :DebugApplicationKey"
+  ]
 )
 ```
 
