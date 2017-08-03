@@ -10,7 +10,7 @@ module Fastlane
         end
         
         params[:archive_path] = File.expand_path params[:archive_path]
-        raise "Archive path #{params[:arhive_path]} does not exist" unless File.exist? params[:archive_path]
+        raise "Archive path #{params[:archive_path]} does not exist" unless File.exist? params[:archive_path]
 
         if File.directory? params[:archive_path] then
           archive = ActHelper::XCArchive.new params[:archive_path], params[:app_name]
