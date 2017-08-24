@@ -3,6 +3,9 @@ describe Fastlane::Actions::ActAction do
     describe 'xcarchive' do
       before do
         @tmp_dir = Dir.mktmpdir
+        @tmp_dir = File.join(@tmp_dir, "dir with spaces")
+        Dir.mkdir @tmp_dir
+
         @archive_path = File.join(@tmp_dir, "Example.xcarchive")
 
         FileUtils.mkdir_p("#{@archive_path}/Products/Applications")
@@ -188,7 +191,7 @@ describe Fastlane::Actions::ActAction do
       end
 
       def invoke_plistbuddy(command, plist)
-        return `/usr/libexec/PlistBuddy -c "#{command}" "#{@archive_path}/#{plist}"`.strip
+        return `/usr/libexec/PlistBuddy -c "#{command}" #{@archive_path.shellescape}/#{plist.shellescape}`.strip
       end
 
       def archive_contains(path)

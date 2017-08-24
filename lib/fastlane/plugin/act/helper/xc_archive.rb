@@ -38,7 +38,7 @@ module Fastlane
       end
 
       def clean
-        `rm -rf #{temp_dir}/*`
+        `rm -rf #{temp_dir.shellescape}/*`
       end
 
       def self.extract_app_path(archive_path)

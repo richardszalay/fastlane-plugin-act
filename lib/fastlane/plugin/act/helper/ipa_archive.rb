@@ -29,7 +29,7 @@ module Fastlane
         UI.verbose("Extracting #{path}")
 
         Dir.chdir(@temp_dir) do
-          result = `unzip -o -q #{@ipa_file} #{path}`
+          result = `unzip -o -q #{@ipa_file.shellescape} #{path.shellescape}`
 
           if $?.exitstatus.nonzero?
             UI.important result
@@ -42,7 +42,7 @@ module Fastlane
       def replace(path)
         UI.verbose("Replacing #{path}")
         Dir.chdir(@temp_dir) do
-          `zip -q #{@ipa_file} #{path}`
+          `zip -q #{@ipa_file.shellescape} #{path.shellescape}`
         end
       end
 
@@ -50,22 +50,22 @@ module Fastlane
       def delete(path)
         UI.verbose("Deleting #{path}")
         Dir.chdir(@temp_dir) do
-          `zip -dq #{@ipa_file} #{path}`
+          `zip -dq #{@ipa_file.shellescape} #{path.shellescape}`
         end
       end
 
       def contains(path = nil)
-        `zipinfo -1 #{@ipa_file} #{path}`
+        `zipinfo -1 #{@ipa_file.shellescape} #{path.shellescape}`
         $?.exitstatus.zero?
       end
 
       def clean
-        `rm -rf #{temp_dir}` if @create_temp_dir
-        `rm -rf #{temp_dir}/*` unless @create_temp_dir
+        `rm -rf #{temp_dir.shellescape}` if @create_temp_dir
+        `rm -rf #{temp_dir.shellescape}/*` unless @create_temp_dir
       end
 
       def self.extract_app_path(archive_path)
-        `zipinfo -1 #{archive_path} "Payload/*.app/" | sed -n '1 p'`.strip().chomp('/')
+        `zipinfo -1 #{archive_path.shellescape} "Payload/*.app/" | sed -n '1 p'`.strip().chomp('/')
       end
     end
   end
