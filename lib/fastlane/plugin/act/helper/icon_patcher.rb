@@ -21,7 +21,7 @@ module Fastlane
           icons.each do |i|
             relative_path = archive.app_path( (i[:target]).to_s )
             local_path = archive.local_path(relative_path)
-            `cp #{i[:source]} #{local_path}`
+            `cp #{i[:source].shellescape} #{local_path.shellescape}`
             archive.replace(relative_path)
           end
 

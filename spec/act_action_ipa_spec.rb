@@ -3,10 +3,13 @@ describe Fastlane::Actions::ActAction do
     describe 'ipa' do
       before do
         @tmp_dir = Dir.mktmpdir
+        @tmp_dir = File.join(@tmp_dir, "dir with spaces")
+        Dir.mkdir @tmp_dir
+
         @ipa_file = File.join(@tmp_dir, "Example.ipa")
 
         Dir.chdir("example/layout/") do
-          `zip #{@ipa_file} -r *`
+          `zip #{@ipa_file.shellescape} -r *`
         end
       end
 
@@ -189,9 +192,9 @@ describe Fastlane::Actions::ActAction do
       def invoke_plistbuddy(command, plist)
         Dir.mktmpdir do |dir|
           Dir.chdir dir do
-            `unzip -o -q #{@ipa_file} #{plist}`
+            `unzip -o -q #{@ipa_file.shellescape} #{plist.shellescape}`
 
-            return `/usr/libexec/PlistBuddy -c "#{command}" "#{plist}"`.strip
+            return `/usr/libexec/PlistBuddy -c "#{command}" "#{plist.shellescape}"`.strip
           end
         end
       end
@@ -199,7 +202,7 @@ describe Fastlane::Actions::ActAction do
       def archive_contains(path)
         Dir.mktmpdir do |dir|
           Dir.chdir dir do
-            `zipinfo -1 #{@ipa_file} #{path} 2>&1`
+            `zipinfo -1 #{@ipa_file.shellescape} #{path.shellescape} 2>&1`
 
             return $?.exitstatus.zero?
           end
