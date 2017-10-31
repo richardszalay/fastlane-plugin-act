@@ -175,6 +175,19 @@ describe Fastlane::Actions::ActAction do
           expect(result).to eql(["Blue29x29", "Blue40x40"])
         end
 
+        it 'sets the Icon Name to be the same as the iconset' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            iconset: "example/Blue.appiconset"
+          )
+
+          result = [
+            invoke_plistbuddy("Print :CFBundleIcons:CFBundlePrimaryIcon:CFBundleIconName", "Products/Applications/Example.app/Info.plist")
+          ]
+
+          expect(result).to eql(["Blue"])
+        end
+
         # TODO: More tests for other idioms (ie. iPad icons). These are supported, but there's no tests yet
 
         it 'ignores :plist_file option' do
@@ -189,6 +202,8 @@ describe Fastlane::Actions::ActAction do
           expect(result).to be true
         end
       end
+
+      context 'providing an iconma'
 
       def invoke_plistbuddy(command, plist)
         return `/usr/libexec/PlistBuddy -c "#{command}" #{@archive_path.shellescape}/#{plist.shellescape}`.strip

@@ -28,6 +28,11 @@ module Fastlane
           icons.map { |i| i[:name] }.uniq.each_with_index do |key, index|
             plist_buddy.exec("Add #{icons_plist_key}:#{index} string #{key}")
           end
+
+          icon_filename = File.basename(iconset_path)
+          icon_excluding_file_type = icon_filename.split('.')[0]
+          icon_name_plist_key = ":CFBundleIcons#{idiom_suffix}:CFBundlePrimaryIcon:CFBundleIconName"
+          plist_buddy.exec("Add #{icon_name_plist_key} string #{icon_excluding_file_type}")
         end
 
         archive.replace(plist_path)
@@ -88,6 +93,7 @@ module Fastlane
           plist_buddy.exec "Delete #{icon_list_key}"
         end
       end
+
     end
   end
 end
