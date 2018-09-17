@@ -8,7 +8,7 @@ module Fastlane
           warn "The ipa parameter has been superceded by archive_path and may be removed in a future release"
           params[:archive_path] = params[:ipa]
         end
-        
+
         params[:archive_path] = File.expand_path params[:archive_path]
         raise "Archive path #{params[:archive_path]} does not exist" unless File.exist? params[:archive_path]
 
@@ -40,12 +40,12 @@ module Fastlane
 
         ActHelper::FilePatcher.replace(
           archive,
-          params[:replace_files],
+          params[:replace_files]
         ) if params[:replace_files]
 
         ActHelper::FilePatcher.remove(
           archive,
-          params[:remove_files],
+          params[:remove_files]
         ) if params[:remove_files]
       end
 
