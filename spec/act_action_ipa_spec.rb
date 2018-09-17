@@ -174,6 +174,32 @@ describe Fastlane::Actions::ActAction do
           expect(result).to eql(["Blue29x29", "Blue40x40"])
         end
 
+        it 'replace files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @ipa_file,
+            replace_files: {
+              "GoogleService-Info.plist" => "example/New-GoogleService-Info.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :TRACKING_ID", "Payload/Example.app/GoogleService-Info.plist")
+
+          expect(result).to eql("UA-123456789-12")
+        end
+
+        it 'delete files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @ipa_file,
+            remove_files: [
+              "GoogleService-Info.plist"
+            ]
+          )
+
+          result = archive_contains("Payload/Example.app/GoogleService-Info.plist")
+
+          expect(result).to be false
+        end
+
         # TODO: More tests for other idioms (ie. iPad icons). These are supported, but there's no tests yet
 
         it 'ignores :plist_file option' do
