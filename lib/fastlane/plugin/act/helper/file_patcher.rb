@@ -7,6 +7,8 @@ module Fastlane
 
           relative_path = archive.app_path(old_file)
           local_path = archive.local_path(relative_path)
+
+          archive.extract(relative_path)
           `cp #{new_file.shellescape} #{local_path.shellescape}`
           archive.replace(relative_path)
         end
@@ -18,8 +20,9 @@ module Fastlane
 
           relative_path = archive.app_path(file_to_delete)
           local_path = archive.local_path(relative_path)
-          File.delete(local_path)
-          archive.replace(relative_path)
+
+          archive.extract(relative_path)
+          archive.delete relative_path
         end
       end
     end
