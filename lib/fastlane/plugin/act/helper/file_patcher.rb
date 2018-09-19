@@ -19,9 +19,7 @@ module Fastlane
           UI.message("Deleting #{file_to_delete}")
 
           relative_path = archive.app_path(file_to_delete)
-          local_path = archive.local_path(relative_path)
 
-          archive.extract(relative_path)
           archive.delete relative_path
         end
       end

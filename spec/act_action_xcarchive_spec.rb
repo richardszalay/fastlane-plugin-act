@@ -175,32 +175,6 @@ describe Fastlane::Actions::ActAction do
           expect(result).to eql(["Blue29x29", "Blue40x40"])
         end
 
-        it 'replace files' do
-          Fastlane::Actions::ActAction.run(
-            archive_path: @archive_path,
-            replace_files: {
-              "GoogleService-Info.plist" => "example/New-GoogleService-Info.plist"
-            }
-          )
-
-          result = invoke_plistbuddy("Print :TRACKING_ID", "Products/Applications/Example.app/GoogleService-Info.plist")
-
-          expect(result).to eql("UA-123456789-12")
-        end
-
-        it 'delete files' do
-          Fastlane::Actions::ActAction.run(
-            archive_path: @archive_path,
-            remove_files: [
-              "GoogleService-Info.plist"
-            ]
-          )
-
-          result = archive_contains("Products/Applications/Example.app/GoogleService-Info.plist")
-
-          expect(result).to be false
-        end
-
         # TODO: More tests for other idioms (ie. iPad icons). These are supported, but there's no tests yet
 
         it 'ignores :plist_file option' do
@@ -213,6 +187,36 @@ describe Fastlane::Actions::ActAction do
           result = archive_contains("Products/Applications/Example.app/Blue29x29@2x.png")
 
           expect(result).to be true
+        end
+      end
+
+      context 'replacing files' do
+        it 'replaces app-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            replace_files: {
+              "GoogleService-Info.plist" => "example/New-GoogleService-Info.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :TRACKING_ID", "Products/Applications/Example.app/GoogleService-Info.plist")
+
+          expect(result).to eql("UA-123456789-12")
+        end
+      end
+
+      context 'delete files' do
+        it 'supports app-relative paths' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            remove_files: [
+              "GoogleService-Info.plist"
+            ]
+          )
+
+          result = archive_contains("Products/Applications/Example.app/GoogleService-Info.plist")
+
+          expect(result).to be false
         end
       end
 
