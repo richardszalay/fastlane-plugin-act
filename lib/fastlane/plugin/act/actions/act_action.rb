@@ -19,8 +19,7 @@ module Fastlane
         end
 
         if params[:plist_file] then
-          params[:plist_file] = archive.app_path(params[:plist_file]) unless params[:plist_file].start_with?("/")
-          params[:plist_file][0] = '' if params[:plist_file].start_with?("/")
+          params[:plist_file] = ActHelper::ArchivePaths.expand(archive, params[:plist_file])
         else
           params[:plist_file] = archive.app_path("Info.plist")
         end

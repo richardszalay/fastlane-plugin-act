@@ -5,7 +5,7 @@ module Fastlane
         file_values.each do |old_file, new_file|
           UI.message("Replacing #{old_file}")
 
-          relative_path = archive.app_path(old_file)
+          relative_path = ActHelper::ArchivePaths.expand(archive, old_file)
           local_path = archive.local_path(relative_path)
 
           archive.extract(relative_path)
@@ -18,7 +18,7 @@ module Fastlane
         file_values.each do |file_to_delete|
           UI.message("Deleting #{file_to_delete}")
 
-          relative_path = archive.app_path(file_to_delete)
+          relative_path = ActHelper::ArchivePaths.expand(archive, file_to_delete)
 
           archive.delete relative_path
         end
