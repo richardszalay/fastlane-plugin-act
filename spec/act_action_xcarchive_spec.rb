@@ -218,6 +218,19 @@ describe Fastlane::Actions::ActAction do
 
           expect(result).to be false
         end
+
+        it 'deletes archive-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            remove_files: [
+              "/Info.plist"
+            ]
+          )
+
+          result = archive_contains("Info.plist")
+
+          expect(result).to be false
+        end
       end
 
       def invoke_plistbuddy(command, plist)
