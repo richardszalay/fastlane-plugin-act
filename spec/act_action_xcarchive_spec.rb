@@ -203,10 +203,23 @@ describe Fastlane::Actions::ActAction do
 
           expect(result).to eql("UA-123456789-12")
         end
+
+        it 'replaces archive-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            replace_files: {
+              "/Info.plist" => "example/New-Info.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :SchemeName", "Info.plist")
+
+          expect(result).to eql("NewExample")
+        end
       end
 
       context 'delete files' do
-        it 'supports app-relative paths' do
+        it 'deletes app-relative paths' do
           Fastlane::Actions::ActAction.run(
             archive_path: @archive_path,
             remove_files: [
