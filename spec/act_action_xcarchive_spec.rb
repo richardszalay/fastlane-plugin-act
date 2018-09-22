@@ -190,6 +190,62 @@ describe Fastlane::Actions::ActAction do
         end
       end
 
+      context 'replacing files' do
+        it 'replaces app-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            replace_files: {
+              "GoogleService-Info.plist" => "example/New-GoogleService-Info.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :TRACKING_ID", "Products/Applications/Example.app/GoogleService-Info.plist")
+
+          expect(result).to eql("UA-123456789-12")
+        end
+
+        it 'replaces archive-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            replace_files: {
+              "/Info.plist" => "example/New-Info.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :SchemeName", "Info.plist")
+
+          expect(result).to eql("NewExample")
+        end
+      end
+
+      context 'delete files' do
+        it 'deletes app-relative paths' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            remove_files: [
+              "GoogleService-Info.plist"
+            ]
+          )
+
+          result = archive_contains("Products/Applications/Example.app/GoogleService-Info.plist")
+
+          expect(result).to be false
+        end
+
+        it 'deletes archive-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            remove_files: [
+              "/Info.plist"
+            ]
+          )
+
+          result = archive_contains("Info.plist")
+
+          expect(result).to be false
+        end
+      end
+
       def invoke_plistbuddy(command, plist)
         return `/usr/libexec/PlistBuddy -c "#{command}" #{@archive_path.shellescape}/#{plist.shellescape}`.strip
       end

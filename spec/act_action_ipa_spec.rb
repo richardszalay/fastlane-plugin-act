@@ -189,6 +189,62 @@ describe Fastlane::Actions::ActAction do
         end
       end
 
+      context 'replacing files' do
+        it 'replaces app-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @ipa_file,
+            replace_files: {
+              "GoogleService-Info.plist" => "example/New-GoogleService-Info.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :TRACKING_ID", "Payload/Example.app/GoogleService-Info.plist")
+
+          expect(result).to eql("UA-123456789-12")
+        end
+
+        it 'replaces archive-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @ipa_file,
+            replace_files: {
+              "/Info.plist" => "example/New-Info.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :SchemeName", "Info.plist")
+
+          expect(result).to eql("NewExample")
+        end
+      end
+
+      context 'delete files' do
+        it 'deletes app-relative paths' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @ipa_file,
+            remove_files: [
+              "GoogleService-Info.plist"
+            ]
+          )
+
+          result = archive_contains("Payload/Example.app/GoogleService-Info.plist")
+
+          expect(result).to be false
+        end
+
+        it 'deletes archive-relative files' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @ipa_file,
+            remove_files: [
+              "/Info.plist"
+            ]
+          )
+
+          result = archive_contains("Info.plist")
+
+          expect(result).to be false
+        end
+      end
+
       def invoke_plistbuddy(command, plist)
         Dir.mktmpdir do |dir|
           Dir.chdir dir do

@@ -8,7 +8,7 @@ module Fastlane
           warn "The ipa parameter has been superceded by archive_path and may be removed in a future release"
           params[:archive_path] = params[:ipa]
         end
-        
+
         params[:archive_path] = File.expand_path params[:archive_path]
         raise "Archive path #{params[:archive_path]} does not exist" unless File.exist? params[:archive_path]
 
@@ -19,8 +19,7 @@ module Fastlane
         end
 
         if params[:plist_file] then
-          params[:plist_file] = archive.app_path(params[:plist_file]) unless params[:plist_file].start_with?("/")
-          params[:plist_file][0] = '' if params[:plist_file].start_with?("/")
+          params[:plist_file] = ActHelper::ArchivePaths.expand(archive, params[:plist_file])
         else
           params[:plist_file] = archive.app_path("Info.plist")
         end
@@ -37,6 +36,16 @@ module Fastlane
           params[:iconset],
           !params[:skip_delete_icons]
         ) if params[:iconset]
+
+        ActHelper::FilePatcher.replace(
+          archive,
+          params[:replace_files]
+        ) if params[:replace_files]
+
+        ActHelper::FilePatcher.remove(
+          archive,
+          params[:remove_files]
+        ) if params[:remove_files]
       end
 
       def self.description
@@ -110,8 +119,20 @@ module Fastlane
                                     env_name: "FACELIFT_SKIP_DELETE_ICONS",
                                  description: "When true, the old icon files will not be deleted from the archive",
                                     optional: true,
-                                default_value: false,
-                                        type: [TrueClass, FalseClass])
+                               default_value: false,
+                                        type: [TrueClass, FalseClass]),
+
+            FastlaneCore::ConfigItem.new(key: :replace_files,
+                                 description: "Files that should be replaced",
+                                    optional: true,
+                               default_value: false,
+                                        type: Hash),
+
+            FastlaneCore::ConfigItem.new(key: :remove_files,
+                                 description: "Files that should be removed",
+                                    optional: true,
+                               default_value: false,
+                                        type: Array)
         ]
       end
 
