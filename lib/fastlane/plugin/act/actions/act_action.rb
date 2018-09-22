@@ -119,20 +119,20 @@ module Fastlane
                                     env_name: "FACELIFT_SKIP_DELETE_ICONS",
                                  description: "When true, the old icon files will not be deleted from the archive",
                                     optional: true,
-                                default_value: false,
+                               default_value: false,
                                         type: [TrueClass, FalseClass]),
 
             FastlaneCore::ConfigItem.new(key: :replace_files,
                                  description: "Files that should be replaced",
                                     optional: true,
-                                default_value: false,
+                               default_value: false,
                                         type: Hash),
 
             FastlaneCore::ConfigItem.new(key: :remove_files,
-                                          description: "Files that should be removed",
-                                             optional: true,
-                                         default_value: false,
-                                                 type: Array)
+                                 description: "Files that should be removed",
+                                    optional: true,
+                               default_value: false,
+                                        type: Array)
         ]
       end
 
