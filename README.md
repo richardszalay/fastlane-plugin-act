@@ -12,7 +12,7 @@ fastlane add_plugin act
 
 ## About act
 
-Applies changes to plists and app icons inside an xcarchive bundle or compiled IPA, making it easy to build once and release multiple times with different configurations 🎭
+Applies changes to plists, files, and app icons inside an xcarchive bundle or compiled IPA, making it easy to build once and release multiple times with different configurations 🎭
 
 ## Example
 
@@ -76,6 +76,24 @@ act(
   # Run a list of PlistBuddy commands
   plist_commands: [
     "Delete :DebugApplicationKey"
+  ]
+)
+
+# Replace a file with a local one (files only - asset catalog items are not supported)
+act(
+  archive_path: "example/Example.ipa",
+
+  replace_files: {
+    "GoogleService-Info.plist" => "example/New-GoogleService-Info.plist"
+  }
+)
+
+# Remove a file (files only - asset catalog items are not supported)
+act(
+  archive_path: "example/Example.ipa",
+
+  remove_files: [
+    "GoogleService-Info.plist"
   ]
 )
 ```
