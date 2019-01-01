@@ -8,7 +8,7 @@ module Fastlane
           relative_path = ActHelper::ArchivePaths.expand(archive, old_file)
           local_path = archive.local_path(relative_path)
 
-          archive.extract(relative_path)
+          `mkdir -p #{File.dirname(local_path).shellescape}`
           `cp #{new_file.shellescape} #{local_path.shellescape}`
           archive.replace(relative_path)
         end
