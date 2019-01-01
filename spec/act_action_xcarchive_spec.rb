@@ -216,6 +216,19 @@ describe Fastlane::Actions::ActAction do
 
           expect(result).to eql("NewExample")
         end
+
+        it 'adds if there is no file to replace' do
+          Fastlane::Actions::ActAction.run(
+            archive_path: @archive_path,
+            replace_files: {
+              "/Foo.plist" => "example/Foo.plist"
+            }
+          )
+
+          result = invoke_plistbuddy("Print :Foo", "Foo.plist")
+
+          expect(result).to eql("42")
+        end
       end
 
       context 'delete files' do
