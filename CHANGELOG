@@ -1,0 +1,9 @@
+1.2.0 - Replace and delete files (#13)
+
+1.1.1 - Escape paths before using them in shell commands. (#6)
+
+1.1.0 - Added support for xcarchive bundles, changing :ipa to :archive_path (#1)
+
+1.0.1 - Icons without a filename no longer generate an error (#3)
+
+1.0.0 - Initial release
