@@ -1,3 +1,5 @@
+1.2.1 - Add files using replace_files if missing (#14)
+
 1.2.0 - Replace and delete files (#13)
 
 1.1.1 - Escape paths before using them in shell commands. (#6)
