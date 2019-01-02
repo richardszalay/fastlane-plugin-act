@@ -126,3 +126,11 @@ For more information about how the `fastlane` plugin system works, check out the
 ## About `fastlane`
 
 `fastlane` is the easiest way to automate building and releasing your iOS and Android apps. To learn more, check out [fastlane.tools](https://fastlane.tools).
+
+## Contributors
+
+Many thanks to the members of the community that have contributed PRs to this project:
+
+* [kimdv](https://github.com/kimdv)
+* [dalsgaard](https://github.com/dalsgaard)
+
