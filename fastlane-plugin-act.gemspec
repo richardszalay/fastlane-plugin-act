@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.author        = %q{Richard Szalay}
   spec.email         = %q{richard@richardszalay.com}
 
-  spec.summary       = %q{Applies changes to plists and app icons inside a compiled IPA}
+  spec.summary       = %q{Applies changes to plists and app icons inside a compiled IPA or xcarchive}
   spec.homepage      = "https://github.com/richardszalay/fastlane-plugin-act"
   spec.license       = "MIT"
 
